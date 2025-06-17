@@ -1,28 +1,17 @@
-# Bedrock Knowledge Base API with AWS CDK
+# Bedrock voice integration
 
-This project creates an AWS CDK stack that deploys:
+This CDK project deploys an architecture that enables Bedrock voice communication via API gateway. Any application that can send and receive audio (as Base-64 encoded audio string) can use this backend to connect with Bedrock features. The next resources are deployed in this stack:
 
-1. Two Python Lambda functions for interacting with AWS services:
-   - Knowledge Base + Polly function: Queries a Bedrock knowledge base and converts responses to speech using Amazon Polly
-   - Transcribe function: Converts speech to text using Amazon Transcribe streaming
-2. A Bedrock Knowledge Base created by the CDK stack
-3. API Gateway to expose these functions as REST endpoints
-4. IAM roles and permissions for secure access to AWS services
+1. Lambda functions (Python runtime):
+   - Amazon transcribe. For converting user query to text.
+   - Knowledge base + Polly. For querying a Bedrock KB and converting the response to audio.
+2. Bedrock Knowledge Base with an Opensearch database and a s3 bucket as datasource.
+3. API Gateway to expose lambda functions to REST endpoints.
+4. IAM roles and permissions for secure access to AWS services.
 
 ## Architecture
 
-```
-┌───────────────┐     ┌───────────────────────┐     ┌───────────────┐
-│  API Gateway  │────▶│ Lambda Functions      │────▶│    Bedrock    │
-│               │     │ - KB + Polly Function │────▶│ Knowledge Base│
-└───────────────┘     │ - Transcribe Function │     └───────────────┘
-                      └───────────────────────┘          │
-                                │                        │
-                                ▼                        ▼
-                      ┌───────────────┐        ┌───────────────┐
-                      │  Amazon Polly │        │     S3 Bucket │
-                      └───────────────┘        └───────────────┘
-```
+![Diagram](/img/diagram.png)
 
 ## Prerequisites
 
@@ -57,7 +46,7 @@ This project creates an AWS CDK stack that deploys:
 
 After deployment, you'll have two API endpoints:
 
-1. **Knowledge Base Query with Polly**: `POST /knowledge-base/query`
+1. **Knowledge Base + Polly**: `POST /knowledge-base/query`
    - Request body: `{ "prompt": "your question here", "sessionid": "optional-session-id" }`
    - Response: 
      ```json
@@ -85,10 +74,9 @@ After deployment, you'll have two API endpoints:
 ### Knowledge Base + Polly Function
 
 Located in `lambda/queryKnowledgeBase/src/kb_polly_function.py`, this function:
-- Accepts a query string
 - Sends the query to the Bedrock knowledge base
 - Converts the text response to speech using Amazon Polly
-- Returns both the text response and base64-encoded audio
+- Returns base64-encoded audio
 
 ### Transcribe Function
 
