@@ -94,6 +94,13 @@ export class BedrockVoiceKnowledgeStack extends cdk.Stack {
       ],
     }));
 
+    bedrockServiceRole.addToPolicy(new iam.PolicyStatement({
+      actions: [
+        'bedrock:InvokeModel'
+      ],
+      resources: ['*'],
+    }));
+
     // Create a Bedrock Knowledge Base using the higher-level construct
     const knowledgeBase = new bedrock.VectorKnowledgeBase(this, 'VectorKnowledgeBase', {
       embeddingsModel: bedrock.BedrockFoundationModel.TITAN_EMBED_TEXT_V1,
