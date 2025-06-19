@@ -19,6 +19,7 @@ This CDK project deploys an architecture that enables Bedrock voice communicatio
 - Node.js 14.x or later
 - AWS CDK v2 installed (`npm install -g aws-cdk`)
 - Python 3.9 or later
+- Docker installed and daemon running
 
 ## Setup
 
