@@ -116,13 +116,13 @@ export class BedrockVoiceKnowledgeStack extends cdk.Stack {
     // Create Lambda layer for Transcribe streaming
     const transcribeLayer = new lambda.LayerVersion(this, 'TranscribeLayer', {
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/layers/transcribe_streaming.zip')),
-      compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
+      compatibleRuntimes: [lambda.Runtime.PYTHON_3_13],
       description: 'Layer containing Amazon Transcribe streaming SDK',
     });
 
     // Create the Speech-to-Text Lambda function
     const speechToTextFunction = new lambda.Function(this, 'SpeechToTextFunction', {
-      runtime: lambda.Runtime.PYTHON_3_9,
+      runtime: lambda.Runtime.PYTHON_3_13,
       handler: 'transcribe_function.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/transcribe/src')),
       role: lambdaServiceRole,
@@ -136,7 +136,7 @@ export class BedrockVoiceKnowledgeStack extends cdk.Stack {
 
     // Create the Knowledge Base Query with Voice Response Lambda function
     const queryWithVoiceFunction = new lambda.Function(this, 'QueryWithVoiceFunction', {
-      runtime: lambda.Runtime.PYTHON_3_9,
+      runtime: lambda.Runtime.PYTHON_3_13,
       handler: 'kb_polly_function.lambda_handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/queryKnowledgeBase/src')),
       role: lambdaServiceRole,
